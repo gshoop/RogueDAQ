@@ -1,0 +1,1 @@
+g++ rogue_example.cpp -o example -I/usr/include/python3.6m -lboost_system -lboost_python3 -lpython3.6m

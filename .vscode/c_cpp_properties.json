@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/include/python3.6m/",
+                "/home/swuupie/rogue/src/rogue/",
+                "/home/swuupie/rogue/include/rogue/interfaces/stream/",
+                "/usr/local/include/rogue/interfaces/stream/"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64",
+            "configurationProvider": "vector-of-bool.cmake-tools",
+            "compilerArgs": [],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/**",
+                    "/usr/include/python3.6m",
+                    "/usr/include/x86_64-linux-gnu/python3.6m"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ],
+    "version": 4
+}
