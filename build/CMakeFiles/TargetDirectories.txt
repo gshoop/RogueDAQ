@@ -1,3 +1,0 @@
-/home/swuupie/UCSC_Research/build/CMakeFiles/rebuild_cache.dir
-/home/swuupie/UCSC_Research/build/CMakeFiles/rogue_example.dir
-/home/swuupie/UCSC_Research/build/CMakeFiles/edit_cache.dir
