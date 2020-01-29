@@ -1,1 +1,8 @@
 .vscode
+
+build/
+
+src/
+
+__pycache__/
+
