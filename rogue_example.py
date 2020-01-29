@@ -119,4 +119,32 @@ src >> fifo >> dst                                         # Connect fifo to mas
 
 print('****************** Fifo ************************')
 print(fifo)
+newLine()
+
+print('src Slave Count : ' + str(src._slaveCount()))
+print('fifo Slave Count: ' + str(fifo._slaveCount()))
+
+### Testing the following configuration, GOAL IS TO UNDERSTAND WHAT IS HAPPENING HERE WHEN SRC SENDS A FRAME
+### WHILE CONNECTED AS SUCH SRC >> FIFO >> DST
+ba = bytearray([i for i in range(10)])
+
+frame = src._reqFrame(100,True)
+frame.write(ba,50)
+
+src._sendFrame(frame)
+
+print('************** Slave ********************')
+print('Frame Count: ' + str(dst.getFrameCount()))
+print('Byte Count : ' + str(dst.getByteCount()))
+newLine()
+
+print('************** Slave ********************')
+print('Frame Count: ' + str(dst.getFrameCount()))
+print('Byte Count : ' + str(dst.getByteCount()))
+newLine()
+# fifo._sendFrame(frame)
+
+print('frame Size   : ' + str(frame.getSize()))
+print('frame Payload: ' + str(frame.getPayload()))
+newLine()
 
