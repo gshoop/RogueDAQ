@@ -1,8 +1,12 @@
-.vscode
-
+# Don't Track these Directories
+.vscode/
 build/
-
 src/
-
 __pycache__/
 
+
+# Compiled source
+*.class
+*.exe
+*.o
+*.so
