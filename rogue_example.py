@@ -86,24 +86,24 @@ print('Frame Size     : ' + str(frame.getSize()))          # Total size of frame
 print('Remaining Space: ' + str(frame.getAvailable()))     # Remaining space in frame for payload
 print('Payload Size   : ' + str(frame.getPayload()))       # Payload size of frame
 newLine()
+with frame.lock():
+    size = frame.getPayload()
 
-size = frame.getPayload()
+    fullData = bytearray(size)                                 # Create empty array using size of the payload
 
-fullData = bytearray(size)                                 # Create empty array using size of the payload
+    frame.read(fullData,0)                                     # Read data from frame starting at an offset of 0
+                                                               # and save it into fullData bytearray
+    print('************* Full Payload Data ****************')
+    print(fullData)
+    newLine()
 
-frame.read(fullData,0)                                     # Read data from frame starting at an offset of 0
-                                                           # and save it into fullData bytearray
-print('************* Full Payload Data ****************')
-print(fullData)
-newLine()
+    partialData1 = bytearray(10)                               # Create 2 empty arrays with size of 10  
+    partialData2 = bytearray(10) 
 
-partialData1 = bytearray(10)                               # Create 2 empty arrays with size of 10
-partialData2 = bytearray(10) 
-
-frame.read(partialData1,0)                                  # Read data from offset of 0 (reading the payload data passed
-                                                           # from original bytearray (ba)) and write into partialData bytearray
-frame.read(partialData2,50)                                 # Reading the last 10 from the payload that was written from the 
-                                                           # second byte array
+    frame.read(partialData1,0)                                 # Read data from offset of 0 (reading the payload data passed
+                                                               # from original bytearray (ba)) and write into partialData bytearray
+    frame.read(partialData2,50)                                # Reading the last 10 from the payload that was written from the 
+                                                               # second byte array
 print('************ Original Payload Data **************')
 print(partialData1 + partialData2)
 newLine()
@@ -111,8 +111,12 @@ newLine()
 
 src = pystream.Master()
 dst = pystream.Slave()
-fifo = pystream.Fifo(20,0,True)
+fifo = pystream.Fifo(100,0,True)
 
-src >> fifo >> dst
+src >> fifo >> dst                                         # Connect fifo to master and slave to master
+                                                           # Fifo will be the primary slave and be the last to
+                                                           # receieve data
 
+print('****************** Fifo ************************')
 print(fifo)
+
