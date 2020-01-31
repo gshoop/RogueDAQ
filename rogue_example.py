@@ -89,21 +89,21 @@ newLine()
 with frame.lock():
     size = frame.getPayload()
 
-    fullData = bytearray(size)                                 # Create empty array using size of the payload
+    fullData = bytearray(size)                             # Create empty array using size of the payload
 
-    frame.read(fullData,0)                                     # Read data from frame starting at an offset of 0
-                                                               # and save it into fullData bytearray
+    frame.read(fullData,0)                                 # Read data from frame starting at an offset of 0
+                                                           # and save it into fullData bytearray
     print('************* Full Payload Data ****************')
     print(fullData)
     newLine()
 
-    partialData1 = bytearray(10)                               # Create 2 empty arrays with size of 10  
+    partialData1 = bytearray(10)                           # Create 2 empty arrays with size of 10  
     partialData2 = bytearray(10) 
 
-    frame.read(partialData1,0)                                 # Read data from offset of 0 (reading the payload data passed
-                                                               # from original bytearray (ba)) and write into partialData bytearray
-    frame.read(partialData2,50)                                # Reading the last 10 from the payload that was written from the 
-                                                               # second byte array
+    frame.read(partialData1,0)                             # Read data from offset of 0 (reading the payload data passed
+                                                           # from original bytearray (ba)) and write into partialData bytearray
+    frame.read(partialData2,50)                            # Reading the last 10 from the payload that was written from the 
+                                                           # second byte array
 print('************ Original Payload Data **************')
 print(partialData1 + partialData2)
 newLine()
@@ -111,7 +111,7 @@ newLine()
 
 src = pystream.Master()
 dst = pystream.Slave()
-fifo = pystream.Fifo(100,0,True)                           # Fifo inherits from both the Master and Slave classes
+fifo = pystream.Fifo(0,0,False)                            # Fifo inherits from both the Master and Slave classes
                                                            # so it retains the same public methods as Master and Slave
 
 src >> fifo >> dst                                         # Connect fifo to master and slave to master
@@ -131,16 +131,29 @@ newLine()
 ba = bytearray([i for i in range(10)])
 
 frame = src._reqFrame(100,True)
-frame.write(ba,50)
+frame.write(ba,50)                                         # We now write the data from the byte array to the frame
 
 src._sendFrame(frame)
+
+print('frame Size   : ' + str(frame.getSize()))
+print('frame Payload: ' + str(frame.getPayload()))
+newLine()
 
 print('**************** Slave ********************')
 print('Frame Count: ' + str(dst.getFrameCount()))
 print('Byte Count : ' + str(dst.getByteCount()))
 newLine()
 
-
-print('frame Size   : ' + str(frame.getSize()))
-print('frame Payload: ' + str(frame.getPayload()))
+print('**************** Fifo ********************')        # Keeping track of Fifo Data, Generally Fifo does not have a frame count
+print('Frame Count: ' + str(fifo.getFrameCount()))         # nor a Byte Count since it passes on the frames to the slave.
+print('Byte Count : ' + str(fifo.getByteCount()))
+print('Fixed Size : ' + str(fifo.getFixedSize()))
+print('Alloc Bytes: ' + str(fifo.getAllocBytes()))
+print('Alloc Count: ' + str(fifo.getAllocCount()))
 newLine()
+
+## We will now create a new situation where Fifo has the zero-copy flag disabled
+src = pystream.Master()
+dst = pystream.Slave()
+fifo = pystream.Fifo(50,20,False)
+
