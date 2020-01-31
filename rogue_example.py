@@ -111,7 +111,8 @@ newLine()
 
 src = pystream.Master()
 dst = pystream.Slave()
-fifo = pystream.Fifo(100,0,True)
+fifo = pystream.Fifo(100,0,True)                           # Fifo inherits from both the Master and Slave classes
+                                                           # so it retains the same public methods as Master and Slave
 
 src >> fifo >> dst                                         # Connect fifo to master and slave to master
                                                            # Fifo will be the primary slave and be the last to
