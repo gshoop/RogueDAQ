@@ -3,7 +3,7 @@
 build/
 src/
 __pycache__/
-
+bin/
 
 # Compiled source
 *.class
