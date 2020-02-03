@@ -1,4 +1,5 @@
 #include <rogue/interfaces/stream/Master.h>
+#include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Fifo.h>
@@ -62,9 +63,16 @@ typedef std::shared_ptr<MyCustomMaster> MyCustomMasterPtr;
 
 int main(int argc, char const *argv[])
 {
-    std::cout << "hi";
+    std::cout << "hi" << "\n";
 
-    //rogue::interfaces::stream::FifoPtr fifo = rogue::interfaces::stream::Fifo::create(100, 0, true);
+    MyCustomMasterPtr src = MyCustomMaster::create();
+    typedef std::shared_ptr<rogue::interfaces::stream::Slave> SlavePtr;
+    SlavePtr dst = rogue::interfaces::stream::Slave::create();
+
+    *src >> dst;
+
+    std::cout << dst << "\n";
+
 
     return 0;
 }
