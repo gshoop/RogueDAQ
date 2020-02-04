@@ -21,7 +21,8 @@ int main(int argc, char const *argv[])
     ris::FramePtr frame;
     ris::FrameIterator it;
     uint32_t x;
-
+    uint32_t size;
+    uint8_t * data;
     *src >> dst;                                                               // Connecting Master to Slave
 
     // Output addresses for Master & Slave Pointers
@@ -34,7 +35,27 @@ int main(int argc, char const *argv[])
 
     // We will request an empty frame from the primary slave (dst)
     frame = src->reqFrame(100,true);
-    frame->setPayload(20);
+    frame->setPayload(100);
+
+    it = frame->begin();
+
+    while ( it != frame->end()) {
+       size = it.remBuffer();
+
+       it = std::copy(data, data+size, it);
+       data += size;
+    }
+    
+    src->sendFrame(frame);
+   // FIRST METHOD FOR SENDING FRAME WITH DATA
+   //  for (x=0; x<10; x++) {
+   //     *it = x;
+   //     it++;
+   //  }
+
+    //it = std::copy(data, data+10,it);
+
+    //src->sendFrame(frame);
 
 
     return 0;
