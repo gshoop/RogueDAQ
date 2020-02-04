@@ -3,6 +3,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Fifo.h>
+#include <rogue/interfaces/stream/Buffer.h>
 #include <iostream>
 
 namespace ris = rogue::interfaces::stream;                                     // Creating namespace for stream interface
@@ -39,27 +40,50 @@ int main(int argc, char const *argv[])
     // We will request an empty frame from the primary slave (dst)
     frame = src->reqFrame(100,true);                                           // First param is min. size of frame & second param is true for zero copy frame
                                                                                // setting false allows master to send the same frame multiple times
-    frame->setPayload(100);                                                    // Set payload size
+    frame->setPayload(10);                                                    // Set payload size
 
     it = frame->begin();
 
-    while ( it != frame->end()) {
-       size = it.remBuffer();                                                  // remBuffer() gets the remaining bytes in the current buffer
-
-       it = std::copy(data, data+size, it);
-       data += size;
+    for (x=0; x<10; x++) {
+       *it = x;
+       it++;
     }
-    std::cout << "FRAME ATTRIBUTES *********************************\n\n";
-    std::cout << "Size:      " << frame->getSize() << "\n";
-    std::cout << "Available: " << frame->getAvailable() << "\n";
-    std::cout << "Payload:   " << frame->getPayload() << "\n\n";
-    
-    src->sendFrame(frame);                                                     // sendFrame() sends the passed frame to all current slaves
+
+    it = frame->begin();
+    // ATTEMPTING TO ACCESS BUFFER TO FIGURE OUT WHAT DATA IS BEING WRITTEN TO FRAME
+    // ATTEMPTIGN TO ACCESS DATA
+    ris::Frame::BufferIterator itBuff = frame->beginBuffer();
+
+    std::cout << "THE THING******************\n";
+    for (uint32_t j=0; j<10; j++) {
+        std::cout << it.remBuffer() << "\n";
+        std::cout << it[j] << "\n";
+    }
+    std::cout << "THE THING******************\n\n";
+
+
+    // ******************************************************************
+    // Another method to fill frame
+    // while ( it != frame->end()) {
+    //    size = it.remBuffer();                                                  // remBuffer() gets the remaining bytes in the current buffer
+       
+    //    it = std::copy(data, data+size, it);
+    //    data += size;
+    // }
+    // *******************************************************************
+
+    std::cout << "FRAME ATTRIBUTES *********************************\n";
+    std::cout << "Size        : " << frame->getSize() << "\n";
+    std::cout << "Available   : " << frame->getAvailable() << "\n";
+    std::cout << "Payload     : " << frame->getPayload() << "\n";
+    std::cout << "Buffer Count: " << frame->bufferCount() << "\n\n";
+     
+    //src->sendFrame(frame);                                                     // sendFrame() sends the passed frame to all current slaves
                                                                                // if zeroCopy after sendFrame(arg) returns arg frame will be emptied
-    std::cout << "FRAME SENT **************************************\n\n";
-    std::cout << "Size:      " << frame->getSize() << "\n";
-    std::cout << "Available: " << frame->getAvailable() << "\n";
-    std::cout << "Payload:   " << frame->getPayload() << "\n\n";
+    // std::cout << "FRAME SENT **************************************\n\n";
+    // std::cout << "Size:      " << frame->getSize() << "\n";
+    // std::cout << "Available: " << frame->getAvailable() << "\n";
+    // std::cout << "Payload:   " << frame->getPayload() << "\n\n";
 
 
     std::cout << "Slave Attributes ********************************\n";
@@ -82,10 +106,10 @@ int main(int argc, char const *argv[])
 
    // ***********************************************************
    // FIRST METHOD FOR SENDING FRAME WITH DATA
-   //  for (x=0; x<10; x++) {
-   //     *it = x;
-   //     it++;
-   //  }
+    // for (x=0; x<10; x++) {
+    //    *it = x;
+    //    it++;
+    // }
 
     //it = std::copy(data, data+10,it);
 
