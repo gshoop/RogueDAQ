@@ -34,7 +34,7 @@ int main(int argc, char const *argv[])
     std::cout << "Slave Pointer Location : ";
     std::cout << dst << "\n";
 
-    std::cout << "Master Slave Count: " << src->slaveCount() << "\n";
+    std::cout << "Master Slave Count: " << src->slaveCount() << "\n\n";
 
     // We will request an empty frame from the primary slave (dst)
     frame = src->reqFrame(100,true);                                           // First param is min. size of frame & second param is true for zero copy frame
@@ -52,7 +52,13 @@ int main(int argc, char const *argv[])
     
     src->sendFrame(frame);                                                     // sendFrame() sends the passed frame to all current slaves
                                                                                // if zeroCopy after sendFrame(arg) returns arg frame will be emptied
-   
+    std::cout << "FRAME SENT **************************************\n\n";
+
+
+    std::cout << "Slave Attributes ********************************\n";
+    std::cout << "Frame Count: " << dst->getFrameCount() << "\n";
+    std::cout << "Byte Count : " << dst->getByteCount() << "\n";
+
    // ***********************************************************
    // REQUESTING ANOTHER FRAME
    // frame = src->reqFrame(100,true);
