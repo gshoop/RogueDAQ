@@ -14,7 +14,7 @@ typedef std::shared_ptr<rogue::interfaces::stream::Slave> SlavePtr;
 
 int main(int argc, char const *argv[])
 {
-    std::cout << "hi" << "\n";
+    std::cout << "*************** ROGUE CPP EXAMPLES ******************" << "\n\n\n";
 
     MasterPtr src = ris::Master::create();                                     // Creation of Master & Slave object ptrs
     SlavePtr dst = ris::Slave::create();
@@ -24,11 +24,18 @@ int main(int argc, char const *argv[])
 
     *src >> dst;                                                               // Connecting Master to Slave
 
-
+    // Output addresses for Master & Slave Pointers
     std::cout << "Master Pointer Location: ";
     std::cout << src << "\n";
     std::cout << "Slave Pointer Location : ";
-    std:: cout << dst << "\n";
+    std::cout << dst << "\n";
+
+    std::cout << "Master Slave Count: " << src->slaveCount() << "\n";
+
+    // We will request an empty frame from the primary slave (dst)
+    frame = src->reqFrame(100,true);
+    frame->setPayload(20);
+
 
     return 0;
 }
