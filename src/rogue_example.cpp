@@ -34,19 +34,21 @@ int main(int argc, char const *argv[])
     std::cout << "Master Slave Count: " << src->slaveCount() << "\n";
 
     // We will request an empty frame from the primary slave (dst)
-    frame = src->reqFrame(100,true);
-    frame->setPayload(100);
+    frame = src->reqFrame(100,true);                                           // First param is min. size of frame & second param is true for zero copy frame
+                                                                               // setting false allows master to send the same frame multiple times
+    frame->setPayload(100);                                                    // Set payload size
 
     it = frame->begin();
 
     while ( it != frame->end()) {
-       size = it.remBuffer();
+       size = it.remBuffer();                                                  // remBuffer() gets the remaining bytes in the current buffer
 
        it = std::copy(data, data+size, it);
        data += size;
     }
     
-    src->sendFrame(frame);
+    src->sendFrame(frame);                                                     // sendFrame() sends the passed frame to all current slaves
+                                                                               // if zeroCopy after sendFrame(arg) returns arg frame will be emptied
    // FIRST METHOD FOR SENDING FRAME WITH DATA
    //  for (x=0; x<10; x++) {
    //     *it = x;
