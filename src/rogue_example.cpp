@@ -22,6 +22,9 @@ int main(int argc, char const *argv[])
     ris::FrameIterator it;
     uint32_t x;
     uint32_t size;
+    uint64_t data64;
+    uint32_t data32;
+    uint8_t data8;
     uint8_t * data;
     *src >> dst;                                                               // Connecting Master to Slave
 
@@ -49,6 +52,22 @@ int main(int argc, char const *argv[])
     
     src->sendFrame(frame);                                                     // sendFrame() sends the passed frame to all current slaves
                                                                                // if zeroCopy after sendFrame(arg) returns arg frame will be emptied
+   
+   // ***********************************************************
+   // REQUESTING ANOTHER FRAME
+   // frame = src->reqFrame(100,true);
+   // frame->setPayload(13);
+
+   // it = frame->begin();
+   
+   // toFrame(it, 8, &data64);                                                 // Following methods should write bit data with byte offsets corresponding
+                                                                               // to the second paramater
+   // toFrame(it, 4, &data32);
+   
+   // toFrame(it, 1, &data8);
+   // ***********************************************************
+
+   // ***********************************************************
    // FIRST METHOD FOR SENDING FRAME WITH DATA
    //  for (x=0; x<10; x++) {
    //     *it = x;
@@ -58,7 +77,7 @@ int main(int argc, char const *argv[])
     //it = std::copy(data, data+10,it);
 
     //src->sendFrame(frame);
-
+   // ************************************************************
 
     return 0;
 }
