@@ -49,10 +49,17 @@ int main(int argc, char const *argv[])
        it = std::copy(data, data+size, it);
        data += size;
     }
+    std::cout << "FRAME ATTRIBUTES *********************************\n\n";
+    std::cout << "Size:      " << frame->getSize() << "\n";
+    std::cout << "Available: " << frame->getAvailable() << "\n";
+    std::cout << "Payload:   " << frame->getPayload() << "\n\n";
     
     src->sendFrame(frame);                                                     // sendFrame() sends the passed frame to all current slaves
                                                                                // if zeroCopy after sendFrame(arg) returns arg frame will be emptied
     std::cout << "FRAME SENT **************************************\n\n";
+    std::cout << "Size:      " << frame->getSize() << "\n";
+    std::cout << "Available: " << frame->getAvailable() << "\n";
+    std::cout << "Payload:   " << frame->getPayload() << "\n\n";
 
 
     std::cout << "Slave Attributes ********************************\n";
