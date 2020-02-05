@@ -4,6 +4,7 @@
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Fifo.h>
 #include <rogue/interfaces/stream/Buffer.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <iostream>
 
 namespace ris = rogue::interfaces::stream;                                     // Creating namespace for stream interface
@@ -19,6 +20,7 @@ int main(int argc, char const *argv[])
 
     MasterPtr src = ris::Master::create();                                     // Creation of Master & Slave object ptrs
     SlavePtr dst = ris::Slave::create();
+    dst->setDebug(100,"Primary Slave");
     ris::FramePtr frame;
     ris::FrameIterator it;
     uint32_t x;
@@ -45,24 +47,11 @@ int main(int argc, char const *argv[])
     it = frame->begin();
 
     for (x=0; x<10; x++) {
-       *it = x;
+       *it = x*2;
        it++;
     }
 
-    it = frame->begin();
-    // ATTEMPTING TO ACCESS BUFFER TO FIGURE OUT WHAT DATA IS BEING WRITTEN TO FRAME
-    // ATTEMPTIGN TO ACCESS DATA
-    ris::Frame::BufferIterator itBuff = frame->beginBuffer();
-
-    std::cout << "THE THING******************\n";
-    for (uint32_t j=0; j<10; j++) {
-        std::cout << it.remBuffer() << "\n";
-        std::cout << it[j] << "\n";
-    }
-    std::cout << "THE THING******************\n\n";
-
-
-    // ******************************************************************
+    // ********************************************************
     // Another method to fill frame
     // while ( it != frame->end()) {
     //    size = it.remBuffer();                                                  // remBuffer() gets the remaining bytes in the current buffer
@@ -77,35 +66,37 @@ int main(int argc, char const *argv[])
     std::cout << "Available   : " << frame->getAvailable() << "\n";
     std::cout << "Payload     : " << frame->getPayload() << "\n";
     std::cout << "Buffer Count: " << frame->bufferCount() << "\n\n";
-     
-    //src->sendFrame(frame);                                                     // sendFrame() sends the passed frame to all current slaves
-                                                                               // if zeroCopy after sendFrame(arg) returns arg frame will be emptied
-    // std::cout << "FRAME SENT **************************************\n\n";
-    // std::cout << "Size:      " << frame->getSize() << "\n";
-    // std::cout << "Available: " << frame->getAvailable() << "\n";
-    // std::cout << "Payload:   " << frame->getPayload() << "\n\n";
 
+    std::cout << "Primary Slave Debug ***************************************************\n";     
+    src->sendFrame(frame);                                                     // sendFrame() sends the passed frame to all current slaves
+                                                                               // if zeroCopy after sendFrame(arg) returns arg frame will be emptied
+    
+    std::cout << "\nFRAME SENT **************************************\n\n";
+    // std::cout << "Size        : " << frame->getSize() << "\n";
+    // std::cout << "Available   : " << frame->getAvailable() << "\n";
+    // std::cout << "Payload     : " << frame->getPayload() << "\n";
+    // std::cout << "Buffer Count: " << frame->bufferCount() << "\n\n";
 
     std::cout << "Slave Attributes ********************************\n";
     std::cout << "Frame Count: " << dst->getFrameCount() << "\n";
-    std::cout << "Byte Count : " << dst->getByteCount() << "\n";
+    std::cout << "Byte Count : " << dst->getByteCount() << "\n\n";
 
-   // ***********************************************************
-   // REQUESTING ANOTHER FRAME
-   // frame = src->reqFrame(100,true);
-   // frame->setPayload(13);
+    // ***********************************************************
+    // REQUESTING ANOTHER FRAME
+    // frame = src->reqFrame(100,true);
+    // frame->setPayload(13);
 
-   // it = frame->begin();
+    // it = frame->begin();
    
-   // toFrame(it, 8, &data64);                                                 // Following methods should write bit data with byte offsets corresponding
+    // toFrame(it, 8, &data64);                                                 // Following methods should write bit data with byte offsets corresponding
                                                                                // to the second paramater
-   // toFrame(it, 4, &data32);
+    // toFrame(it, 4, &data32);
    
-   // toFrame(it, 1, &data8);
-   // ***********************************************************
+    // toFrame(it, 1, &data8);
+    // ***********************************************************
 
-   // ***********************************************************
-   // FIRST METHOD FOR SENDING FRAME WITH DATA
+    // ***********************************************************
+    // FIRST METHOD FOR SENDING FRAME WITH DATA
     // for (x=0; x<10; x++) {
     //    *it = x;
     //    it++;
@@ -114,7 +105,19 @@ int main(int argc, char const *argv[])
     //it = std::copy(data, data+10,it);
 
     //src->sendFrame(frame);
-   // ************************************************************
+    // ************************************************************
+
+    // RECEIVING FRAMES
+    ris::FrameLockPtr lock = frame->lock();
+
+    it = frame->begin();
+    // Accessing the frame data using the iterator. For loop to iterate through the iterator and de-reference
+    // it to retreive the data.
+    for (x=0; x < 10; x++) {
+        printf("Location %i = 0x%x\n", x, *it);
+        it++;
+    }   
+
 
     return 0;
 }
