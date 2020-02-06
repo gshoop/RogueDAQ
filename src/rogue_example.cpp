@@ -68,17 +68,15 @@ int main(int argc, char const *argv[])
     // }
     // *******************************************************************
 
-    std::cout << "FRAME ATTRIBUTES *********************************\n";
-    std::cout << "Size        : " << frame->getSize() << "\n";
-    std::cout << "Available   : " << frame->getAvailable() << "\n";
-    std::cout << "Payload     : " << frame->getPayload() << "\n";
-    std::cout << "Buffer Count: " << frame->bufferCount() << "\n\n";
+    std::cout << "FRAME DEBUG ***********************************************************\n";
+    frame->debug();
+    std::cout << "\n";
 
-    std::cout << "Primary Slave Debug ***************************************************\n";     
+    std::cout << "FRAME SENT ************************************************************\n\n";    
+    std::cout << "PRIMARY SLAVE DEBUG ***************************************************\n"; 
     src->sendFrame(frame);                                                     // sendFrame() sends the passed frame to all current slaves
                                                                                // if zeroCopy after sendFrame(arg) returns arg frame will be emptied
-    
-    std::cout << "\nFRAME SENT **************************************\n\n";
+    std::cout << "\n";
     // std::cout << "Size        : " << frame->getSize() << "\n";
     // std::cout << "Available   : " << frame->getAvailable() << "\n";
     // std::cout << "Payload     : " << frame->getPayload() << "\n";
@@ -139,6 +137,10 @@ int main(int argc, char const *argv[])
     // ****************************** FIFO DEMONSTRATION *****************************************
 
     *(*fifo << srcf) >> dstf;                                                    // Connecting the fifo to the source and then onto the destination.
+
+    ris::Frame::BufferIterator itBuff = frame->beginBuffer();
+    ris::Buffer buffer = *(itBuff)->get();
+    buffer.debug();
 
 
     return 0;
