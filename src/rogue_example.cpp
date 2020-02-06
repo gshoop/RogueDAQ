@@ -140,7 +140,9 @@ int main(int argc, char const *argv[])
 
     ris::Frame::BufferIterator itBuff = frame->beginBuffer();
     ris::Buffer buffer = *(itBuff)->get();
-    buffer.debug();
+    uint32_t idx = 10;
+    buffer.debug(idx);
+    
 
 
     return 0;
