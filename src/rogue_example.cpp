@@ -6,6 +6,7 @@
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <iostream>
+#include <vector>
 
 namespace ris = rogue::interfaces::stream;                                     // Creating namespace for stream interface
 
@@ -20,15 +21,16 @@ int main(int argc, char const *argv[])
 
     MasterPtr src = ris::Master::create();                                     // Creation of Master & Slave object ptrs
     SlavePtr dst = ris::Slave::create();
-    dst->setDebug(100,"Primary Slave");
+    dst->setDebug(100,"Primary Slave");                                        // Set debug option for slave. Outputs frame data when sent from master
     ris::FramePtr frame;
     ris::FrameIterator it;
     uint32_t x;
-    uint32_t size;
-    uint64_t data64;
-    uint32_t data32;
-    uint8_t data8;
-    uint8_t * data;
+    //uint32_t size;
+    //uint64_t data64;
+    //uint32_t data32;
+    //uint8_t data8;
+    //uint8_t * data;
+
     *src >> dst;                                                               // Connecting Master to Slave
 
     // Output addresses for Master & Slave Pointers
@@ -42,7 +44,7 @@ int main(int argc, char const *argv[])
     // We will request an empty frame from the primary slave (dst)
     frame = src->reqFrame(100,true);                                           // First param is min. size of frame & second param is true for zero copy frame
                                                                                // setting false allows master to send the same frame multiple times
-    frame->setPayload(10);                                                    // Set payload size
+    frame->setPayload(10);                                                     // Set payload size
 
     it = frame->begin();
 
@@ -77,7 +79,7 @@ int main(int argc, char const *argv[])
     // std::cout << "Payload     : " << frame->getPayload() << "\n";
     // std::cout << "Buffer Count: " << frame->bufferCount() << "\n\n";
 
-    std::cout << "Slave Attributes ********************************\n";
+    std::cout << "Slave Attributes **********************************\n";
     std::cout << "Frame Count: " << dst->getFrameCount() << "\n";
     std::cout << "Byte Count : " << dst->getByteCount() << "\n\n";
 
@@ -109,15 +111,23 @@ int main(int argc, char const *argv[])
 
     // RECEIVING FRAMES
     ris::FrameLockPtr lock = frame->lock();
-
+    std::vector<uint32_t> data(10);
+    std::vector<uint32_t>::iterator vit = data.begin();
+    
     it = frame->begin();
     // Accessing the frame data using the iterator. For loop to iterate through the iterator and de-reference
     // it to retreive the data.
     for (x=0; x < 10; x++) {
         printf("Location %i = 0x%x\n", x, *it);
         it++;
-    }   
+    }
+    std::cout << "\n\n";
+    //std::copy(frame->begin(),frame->end(),std::ostream_iterator<uint32_t>(std::cout<< " "));
+    std::copy(frame->begin(),frame->end(), vit);
 
+    for (vit = data.begin(); vit != data.end(); vit++) {
+        printf("0x%x ", *vit);
+    }
 
     return 0;
 }
